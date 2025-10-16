@@ -1,0 +1,43 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  /* Был конфликт из архива: margin: 16px 0; и ниже margin: 0; */
+  /* Оставляем корректный вертикальный отступ: */
+  margin: 16px 0;
+  list-style: none;
+  padding: 0;
+}
+
+.pageItem {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease-in-out;
+}
+
+.pageItem:hover {
+  background-color: #f8f9fa;
+}
+
+.pageLink {
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #212529;
+  font-size: 14px;
+}
+
+.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.active a {
+  color: #fff !important;
+  font-weight: 500;
+}
