@@ -1,40 +1,29 @@
-/* Переменные — на локальном классе, а не в :root */
 .header {
-  --accent: #a855f7; /* яркий фиолетовый */
-  --accent-hover: #9ad6c0; /* светлее при наведении */
-
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   background-color: #333;
-  color: #fff;
+  color: white;
 }
 
-/* Логотип / бренд слева */
 .headerLink {
   text-decoration: none;
-  color: var(--accent);
+  color: white;
   font-size: 1.5rem;
   font-weight: 700;
 }
-.headerLink:hover,
-.headerLink:focus-visible {
-  color: var(--accent-hover);
-  outline: none;
-}
-.headerLink:visited {
-  color: var(--accent); /* фиксируем, чтобы не темнел */
+
+.headerLink:hover {
+  color: #ddd;
 }
 
-/* Навигация справа */
 .navigation {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  list-style: none;
+  list-style-type: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  gap: 1rem;
 }
 
 .navigationItem {
@@ -44,15 +33,10 @@
 
 .navigationLink {
   text-decoration: none;
-  color: var(--accent);
+  color: white;
   font-size: 1rem;
-  font-weight: 600;
 }
-.navigationLink:hover,
-.navigationLink:focus-visible {
-  color: var(--accent-hover);
-  outline: none;
-}
-.navigationLink:visited {
-  color: var(--accent);
+
+.navigationLink:hover {
+  color: #ddd;
 }
