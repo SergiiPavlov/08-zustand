@@ -53,7 +53,11 @@ export default function TagsMenu() {
           {tags.map(tag => (
             <li key={tag} className={css.menuItem} role="none">
               <Link
-                href={tag === ALL_TAG ? '/notes' : `/notes/filter/${encodeURIComponent(String(tag))}`}
+                href={
+                  tag === ALL_TAG
+                    ? '/notes/filter/All'
+                    : `/notes/filter/${encodeURIComponent(String(tag))}`
+                }
                 className={css.menuLink}
                 role="menuitem"
                 onClick={() => setIsOpen(false)}
