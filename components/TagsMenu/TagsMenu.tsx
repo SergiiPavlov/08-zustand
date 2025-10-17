@@ -18,11 +18,21 @@ export default function TagsMenu() {
 
   // Автозакрытие при смене маршрута
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+
     setIsOpen(false);
   }, [pathname]);
 
   // Закрытие по клику вне меню
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+
     if (!isOpen) return;
 
     const handlePointerDown = (event: PointerEvent) => {
