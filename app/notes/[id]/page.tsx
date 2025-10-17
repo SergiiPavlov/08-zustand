@@ -18,6 +18,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
     const description = note.content.slice(0, 100);
     const url = `${APP_URL}/notes/${encodeURIComponent(id)}`;
     return {
+      title,
       description,
       openGraph: {
         title,
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
     };
   } catch {
     return {
+      title: 'Note not found',
       description: 'Note details',
     };
   }
