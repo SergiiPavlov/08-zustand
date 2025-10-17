@@ -4,7 +4,7 @@ import css from './NoteForm.module.css';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { createNote } from '@/lib/api/notes';
+import { createNote, type NewNoteData } from '@/lib/api';
 import { getErrorMessage } from '@/lib/errors';
 import type { NoteTag } from '@/types/note';
 import { useNoteDraftStore, initialDraft, type NoteDraft } from '@/lib/store/noteStore';
@@ -13,7 +13,10 @@ const TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shoppi
 
   const MIN_TITLE = 3;
 
-export default function NoteForm() {
+export default function NoteForm({ categories }: { categories?: { id: string; name: string }[] }) {
+  const categoriesOptions = (categories && categories.length)
+    ? categories.map(c => ({ id: c.id, name: c.name }))
+    : TAGS.map(t => ({ id: t.toLowerCase(), name: t }));
   const router = useRouter();
   const qc = useQueryClient();
   const draft = useNoteDraftStore((state) => state.draft);
@@ -56,7 +59,7 @@ export default function NoteForm() {
     }
 
     try {
-      await mutateAsync({ title, content, tag });
+      await mutateAsync({ title, content, categoryId: tag.toLowerCase() } as NewNoteData);
     } catch {
       // swallow error, toast handled in onError
     }
@@ -110,9 +113,9 @@ export default function NoteForm() {
           value={draft.tag ?? initialDraft.tag}
           onChange={handleChange}
         >
-          {TAGS.map((tag) => (
-            <option key={tag} value={tag}>
-              {tag}
+          {categoriesOptions.map(opt => (
+            <option key={opt.id} value={opt.id}>
+              {opt.name}
             </option>
           ))}
         </select>
