@@ -4,14 +4,14 @@ import { fetchNoteById } from '@/lib/api/notes';
 import NoteDetailsClient from './NoteDetails.client';
 
 interface NoteDetailsPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 const APP_URL = 'https://notehub.example';
 const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
 
 export async function generateMetadata({ params }: NoteDetailsPageProps): Promise<Metadata> {
-  const { id } = params;
+  const { id } = await params;
   try {
     const note = await fetchNoteById(id);
     const title = `Note: ${note.title} – NoteHub`;
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
 }
 
 export default async function NoteDetailsPage({ params }: NoteDetailsPageProps) {
-  const { id } = params;
+  const { id } = await params;
   const numericId = Number(id);
   const keyId = Number.isFinite(numericId) ? numericId : id;
 

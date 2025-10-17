@@ -38,7 +38,9 @@ export default function NoteForm() {
     setDraft({ [fieldName]: nextValue } as Partial<NoteDraft>);
   };
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     const title = String(formData.get('title') ?? '').trim();
     const content = String(formData.get('content') ?? '').trim();
     const tag = (String(formData.get('tag') ?? 'Todo') as NoteTag);
@@ -54,7 +56,7 @@ export default function NoteForm() {
   };
 
   return (
-    <form className={css.form} action={handleSubmit}>
+    <form className={css.form} onSubmit={handleSubmit}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
         <input
