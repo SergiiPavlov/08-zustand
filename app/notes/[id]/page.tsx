@@ -12,7 +12,8 @@ const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
 
 export async function generateMetadata({ params }: NoteDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
-  const url = `${APP_URL}/notes/${encodeURIComponent(id)}`;
+  const canonicalPath = `/notes/${encodeURIComponent(id)}`;
+  const url = `${APP_URL}${canonicalPath}`;
   try {
     const note = await fetchNoteById(id);
     const title = `Note: ${note.title}`;
@@ -20,6 +21,9 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
     return {
       title,
       description,
+      alternates: {
+        canonical: canonicalPath,
+      },
       openGraph: {
         title,
         description,
@@ -34,6 +38,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
         description,
         images: [OG_IMAGE],
       },
+      metadataBase: new URL(APP_URL),
     };
   } catch {
     const title = 'Note not found';
@@ -41,6 +46,9 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
     return {
       title,
       description,
+      alternates: {
+        canonical: canonicalPath,
+      },
       openGraph: {
         title,
         description,
@@ -55,6 +63,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
         description,
         images: [OG_IMAGE],
       },
+      metadataBase: new URL(APP_URL),
     };
   }
 }

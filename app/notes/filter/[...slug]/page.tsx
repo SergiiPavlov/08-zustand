@@ -38,11 +38,15 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
   const pageTitle = isAll ? 'All notes' : `Notes tagged: ${tag}`;
   const description = isAll ? 'Browse all notes' : `Browse notes filtered by tag: ${tag}`;
   const slugSegment = isAll ? ALL_TAG : tag;
-  const url = `${APP_URL}/notes/filter/${encodeURIComponent(slugSegment)}`;
+  const canonicalPath = `/notes/filter/${encodeURIComponent(slugSegment)}`;
+  const url = `${APP_URL}${canonicalPath}`;
 
   return {
     title: pageTitle,
     description,
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
       title: pageTitle,
       description,
@@ -57,6 +61,7 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
       description,
       images: [OG_IMAGE],
     },
+    metadataBase: new URL(APP_URL),
   };
 }
 
