@@ -8,9 +8,7 @@ const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
 const PAGE_PATH = '/notes/action/create';
 
 export const metadata = {
-  title: 'Create note',
   description: 'Create a new note in your NoteHub.',
-  url: `${APP_URL}${PAGE_PATH}`,
   alternates: {
     canonical: `${APP_URL}${PAGE_PATH}`,
   },
@@ -22,7 +20,7 @@ export const metadata = {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: 'Create note' }],
     type: 'website',
   },
-} satisfies Metadata & { url: string };
+} satisfies Metadata;
 
 export default function CreateNote() {
   return (

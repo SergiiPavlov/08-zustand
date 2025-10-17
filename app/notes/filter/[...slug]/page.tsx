@@ -35,25 +35,24 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
   const rawValue = slug[0];
   const { tag } = resolveTagFromSlug(rawValue);
   const isAll = tag === ALL_TAG;
-  const title = isAll ? 'All notes' : `Notes tagged: ${tag}`;
+  const pageTitle = isAll ? 'All notes' : `Notes tagged: ${tag}`;
   const description = isAll ? 'Browse all notes' : `Browse notes filtered by tag: ${tag}`;
   const slugSegment = isAll ? ALL_TAG : tag;
   const url = `${APP_URL}/notes/filter/${encodeURIComponent(slugSegment)}`;
 
   return {
-    title,
     description,
     openGraph: {
-      title,
+      title: pageTitle,
       description,
       url,
       siteName: 'NoteHub',
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: title }],
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: pageTitle }],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: pageTitle,
       description,
       images: [OG_IMAGE],
     },

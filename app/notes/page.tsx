@@ -7,9 +7,7 @@ const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
 const PAGE_PATH = '/notes';
 
 export const metadata = {
-  title: 'All notes',
   description: 'Browse all of your notes in one place.',
-  url: `${APP_URL}${PAGE_PATH}`,
   alternates: {
     canonical: `${APP_URL}${PAGE_PATH}`,
   },
@@ -27,7 +25,7 @@ export const metadata = {
     description: 'Browse all of your notes in one place.',
     images: [OG_IMAGE],
   },
-} satisfies Metadata & { url: string };
+} satisfies Metadata;
 
 export default function NotesPage() {
   redirect('/notes/filter/All');
