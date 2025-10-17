@@ -1,10 +1,12 @@
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import {
   buildNotehubUrl,
   createNotehubHeaders,
   handleNotehubProxyError,
   relayNotehubResponse,
 } from '../../utils';
+import { getMockNoteById } from '../../mock-data';
 
 // Next.js 15: второй аргумент должен иметь params: Promise<...>
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -16,9 +18,23 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       headers: createNotehubHeaders(),
       cache: 'no-store',
     });
+
+    if (!response.ok) {
+      throw new Error(`Unexpected status ${response.status}`);
+    }
+
     return await relayNotehubResponse(response);
   } catch (error) {
-    return handleNotehubProxyError(error);
+    console.warn(`[notehub] Falling back to mock note ${id}.`, error);
+    const mockNote = getMockNoteById(id);
+    if (mockNote) {
+      return NextResponse.json(mockNote, {
+        status: 200,
+        headers: { 'x-notehub-mock': '1' },
+      });
+    }
+
+    return NextResponse.json({ message: 'Note not found' }, { status: 404 });
   }
 }
 
