@@ -27,11 +27,11 @@ function resolveTagFromSlug(slug?: string): { tag: string; tagForQuery?: NoteTag
 }
 
 interface NotesFilterPageProps {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 }
 
 export async function generateMetadata({ params }: NotesFilterPageProps): Promise<Metadata> {
-  const { slug = [] } = params;
+  const { slug = [] } = (await params) ?? {};
   const rawValue = slug[0];
   const { tag } = resolveTagFromSlug(rawValue);
   const isAll = tag === ALL_TAG;
@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
 }
 
 export default async function NotesFilterPage({ params }: NotesFilterPageProps) {
-  const { slug = [] } = params;
+  const { slug = [] } = (await params) ?? {};
   const rawValue = slug[0];
   const { tag: initialTag, tagForQuery } = resolveTagFromSlug(rawValue);
 
