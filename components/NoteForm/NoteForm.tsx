@@ -10,6 +10,8 @@ import { useNoteDraftStore, initialDraft, type NoteDraft } from '@/lib/store/not
 
 const TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'] as const;
 
+  const MIN_TITLE = 3;
+
 export default function NoteForm() {
   const router = useRouter();
   const qc = useQueryClient();
@@ -47,6 +49,10 @@ export default function NoteForm() {
       toast.error('Title is required');
       return;
     }
+    if (title.length < MIN_TITLE) {
+      toast.error(`Title must be at least ${MIN_TITLE} characters`);
+      return;
+    }
 
     try {
       await mutateAsync({ title, content, tag });
@@ -59,6 +65,9 @@ export default function NoteForm() {
     router.back(); // do not clear draft on cancel
   };
 
+  const titleLen = (draft.title ?? initialDraft.title ?? '').trim().length;
+  const titleInvalid = titleLen > 0 && titleLen < MIN_TITLE;
+
   return (
     <form className={css.form}>
       <div className={css.formGroup}>
@@ -70,8 +79,14 @@ export default function NoteForm() {
           className={css.input}
           value={draft.title ?? initialDraft.title}
           onChange={handleChange}
+          required
+          minLength={MIN_TITLE}
+          aria-invalid={titleInvalid ? true : undefined}
           aria-required="true"
         />
+        {titleInvalid && (
+          <p className={css.error}>Title must be at least {MIN_TITLE} characters.</p>
+        )}
       </div>
 
       <div className={css.formGroup}>
@@ -83,7 +98,7 @@ export default function NoteForm() {
           value={draft.content ?? initialDraft.content}
           onChange={handleChange}
         />
-      </div>
+</div>
 
       <div className={css.formGroup}>
         <label htmlFor="tag">Tag</label>
