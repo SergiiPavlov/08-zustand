@@ -1,7 +1,7 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
+import { notehubClient } from './client';
 import type { Note, NoteTag } from '@/types/note';
 
-/** Canonical list response used throughout the app */
 export type NoteListResponse = {
   notes: Note[];
   page: number;
@@ -10,7 +10,6 @@ export type NoteListResponse = {
   totalItems: number;
 };
 
-/** Raw API list response shape (server can return items or notes) */
 type NoteListResponseServer = {
   items?: Note[];
   notes?: Note[];
@@ -20,28 +19,6 @@ type NoteListResponseServer = {
   totalItems: number;
 };
 
-const BASE_URL = (process.env.NEXT_PUBLIC_API_BASE ?? '').trim() || '/api/notehub';
-const DIRECT_API = /^https?:\/\//i.test(BASE_URL);
-
-/** Create axios instance once */
-const api: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-/** If we call the public API directly, attach Authorization from NEXT_PUBLIC_NOTEHUB_TOKEN */
-if (DIRECT_API) {
-  const token = (process.env.NEXT_PUBLIC_NOTEHUB_TOKEN ?? '').trim();
-  if (token) {
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
-  }
-}
-
-/** ———————————————————————————————————————————————————————
- * Normalizers (defensive in case of partial/malformed data)
- * ——————————————————————————————————————————————————————— */
 export function normalizeNote(data: unknown): Note {
   const d = (data ?? {}) as Partial<Record<string, any>>;
   const safeTag: NoteTag =
@@ -69,11 +46,6 @@ export function normalizeFetchResponse(data: NoteListResponseServer): NoteListRe
   return { notes, page, perPage, totalItems, totalPages };
 }
 
-/** ———————————————————————————————————————————————————————
- * API functions (explicit Axios generics everywhere)
- * ——————————————————————————————————————————————————————— */
-
-/** List notes with pagination, search and optional tag (omit tag when 'All') */
 export async function fetchNotes(params: {
   page?: number;
   perPage?: number;
@@ -83,7 +55,7 @@ export async function fetchNotes(params: {
   const { page = 1, perPage = 12, search = '', tag } = params;
   const sendTag = tag && tag !== 'All' ? String(tag) : undefined;
 
-  const res: AxiosResponse<NoteListResponseServer> = await api.get<NoteListResponseServer>('/notes', {
+  const res: AxiosResponse<NoteListResponseServer> = await notehubClient.get<NoteListResponseServer>('/notes', {
     params: {
       page,
       perPage,
@@ -95,30 +67,26 @@ export async function fetchNotes(params: {
   return normalizeFetchResponse(res.data);
 }
 
-/** Get a single note by id */
 export async function fetchNoteById(id: string): Promise<Note> {
-  const res: AxiosResponse<Note> = await api.get<Note>(`/notes/${id}`);
+  const res: AxiosResponse<Note> = await notehubClient.get<Note>(`/notes/${id}`);
   return normalizeNote(res.data);
 }
 
-/** Create a new note */
 export async function createNote(payload: { title: string; content: string; tag: NoteTag }): Promise<Note> {
-  const res: AxiosResponse<Note> = await api.post<Note>('/notes', payload);
+  const res: AxiosResponse<Note> = await notehubClient.post<Note>('/notes', payload);
   return normalizeNote(res.data);
 }
 
-/** Update an existing note */
 export async function updateNote(
   id: string,
   payload: Partial<{ title: string; content: string; tag: NoteTag }>
 ): Promise<Note> {
-  const res: AxiosResponse<Note> = await api.patch<Note>(`/notes/${id}`, payload);
+  const res: AxiosResponse<Note> = await notehubClient.patch<Note>(`/notes/${id}`, payload);
   return normalizeNote(res.data);
 }
 
-/** Delete a note and return the deleted note (reviewer requirement) */
 export async function deleteNote(id: string): Promise<Note> {
-  const res: AxiosResponse<Note> = await api.delete<Note>(`/notes/${id}`);
+  const res: AxiosResponse<Note> = await notehubClient.delete<Note>(`/notes/${id}`);
   return normalizeNote(res.data);
 }
 

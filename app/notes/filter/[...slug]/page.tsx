@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import NotesClient from './Notes.client';
 import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { fetchNotes } from '@/lib/api';
+import { fetchNotes } from '@/lib/api/notes';
 import type { NoteTag } from '@/types/note';
 
 const TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'] as const;
