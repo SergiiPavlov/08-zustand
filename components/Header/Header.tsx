@@ -6,14 +6,14 @@ import TagsMenu from '@/components/TagsMenu/TagsMenu';
 export default function Header() {
   return (
     <header className={css.header}>
-      <Link href="/" aria-label="Home" className={css.headerLink}>
+      <Link prefetch={false} href="/" aria-label="Home" className={css.headerLink}>
         NoteHub
       </Link>
 
       <nav aria-label="Main Navigation">
         <ul className={css.navigation}>
           <li className={css.navigationItem}>
-            <Link href="/" className={css.navigationLink}>
+            <Link prefetch={false} href="/" className={css.navigationLink}>
               Home
             </Link>
           </li>

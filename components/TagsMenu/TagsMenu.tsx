@@ -71,7 +71,7 @@ export default function TagsMenu() {
         >
           {tags.map(tag => (
             <li key={tag} className={css.menuItem} role="none">
-              <Link
+              <Link prefetch={false}
                 href={
                   tag === ALL_TAG
                     ? '/notes/filter/All'
