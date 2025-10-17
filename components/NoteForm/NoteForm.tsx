@@ -121,12 +121,12 @@ export default function NoteForm() {
         <button
           type="submit"
           disabled={isPending}
-          className={css.buttonPrimary}
+          className={css.submitButton}
           formAction={handleFormAction}
         >
           {isPending ? 'Creating…' : 'Create'}
         </button>
-        <button type="button" onClick={handleCancel} className={css.buttonSecondary}>
+        <button type="button" onClick={handleCancel} className={css.cancelButton}>
           Cancel
         </button>
       </div>
