@@ -13,7 +13,8 @@ export default function TagsMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const tags = [ALL_TAG, ...NOTE_TAGS];
+  const menuId = 'tags-menu';
+  const tags: (NoteTag | typeof ALL_TAG)[] = [ALL_TAG, ...NOTE_TAGS];
 
   // Автозакрытие при смене маршрута
   useEffect(() => {
@@ -41,17 +42,18 @@ export default function TagsMenu() {
         className={css.menuButton}
         aria-haspopup="menu"
         aria-expanded={isOpen}
+        aria-controls={menuId}
         onClick={() => setIsOpen(prev => !prev)}
       >
         Notes ▾
       </button>
 
       {isOpen && (
-        <ul className={css.menuList} role="menu">
+        <ul id={menuId} className={css.menuList} role="menu">
           {tags.map(tag => (
             <li key={tag} className={css.menuItem} role="none">
               <Link
-                href={`/notes/filter/${encodeURIComponent(tag)}`}
+                href={tag === ALL_TAG ? '/notes' : `/notes/filter/${encodeURIComponent(String(tag))}`}
                 className={css.menuLink}
                 role="menuitem"
                 onClick={() => setIsOpen(false)}
