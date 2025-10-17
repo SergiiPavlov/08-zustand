@@ -17,7 +17,7 @@ export default function NoteForm() {
   const setDraft = useNoteDraftStore((state) => state.setDraft);
   const clearDraft = useNoteDraftStore((state) => state.clearDraft);
 
-  const { mutate, isPending } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       // invalidate lists and details
@@ -38,17 +38,21 @@ export default function NoteForm() {
     setDraft({ [fieldName]: nextValue } as Partial<NoteDraft>);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  const handleFormAction = async (formData: FormData) => {
     const title = String(formData.get('title') ?? '').trim();
     const content = String(formData.get('content') ?? '').trim();
-    const tag = (String(formData.get('tag') ?? 'Todo') as NoteTag);
+    const tag = String(formData.get('tag') ?? 'Todo') as NoteTag;
+
     if (!title) {
       toast.error('Title is required');
       return;
     }
-    mutate({ title, content, tag });
+
+    try {
+      await mutateAsync({ title, content, tag });
+    } catch {
+      // swallow error, toast handled in onError
+    }
   };
 
   const handleCancel = () => {
@@ -56,7 +60,7 @@ export default function NoteForm() {
   };
 
   return (
-    <form className={css.form} onSubmit={handleSubmit}>
+    <form className={css.form}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
         <input
@@ -99,7 +103,12 @@ export default function NoteForm() {
       </div>
 
       <div className={css.actions}>
-        <button type="submit" disabled={isPending} className={css.buttonPrimary}>
+        <button
+          type="submit"
+          disabled={isPending}
+          className={css.buttonPrimary}
+          formAction={handleFormAction}
+        >
           {isPending ? 'Creating…' : 'Create'}
         </button>
         <button type="button" onClick={handleCancel} className={css.buttonSecondary}>

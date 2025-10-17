@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
   const url = `${APP_URL}/notes/filter/${encodeURIComponent(slugSegment)}`;
 
   return {
+    title: pageTitle,
     description,
     openGraph: {
       title: pageTitle,
