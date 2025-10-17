@@ -18,21 +18,11 @@ export default function TagsMenu() {
 
   // Автозакрытие при смене маршрута
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
-    };
-    document.addEventListener('keydown', onKeyDown);
-
     setIsOpen(false);
   }, [pathname]);
 
-  // Закрытие по клику вне меню
+  // Закрытие по клику вне меню и по Escape
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
-    };
-    document.addEventListener('keydown', onKeyDown);
-
     if (!isOpen) return;
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -41,8 +31,19 @@ export default function TagsMenu() {
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener('pointerdown', handlePointerDown);
-    return () => document.removeEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen]);
 
   return (

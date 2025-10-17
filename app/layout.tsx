@@ -33,6 +33,11 @@ export const metadata: Metadata = {
     description: 'NoteHub demo: search, filter, paginate notes.',
     images: [OG_IMAGE],
   },
+  icons: {
+    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    shortcut: ['/icon.svg'],
+    apple: ['/icon.svg'],
+  },
 };
 
 export interface RootLayoutProps {
