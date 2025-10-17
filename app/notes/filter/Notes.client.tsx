@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useDebounce } from 'use-debounce';
-import { Toaster, toast } from 'react-hot-toast';
 import css from './NotesPage.module.css';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
@@ -43,9 +42,7 @@ export default function NotesClient({ initialTag = 'All' }: { initialTag?: strin
   const handlePageChange = (next: number) => setPage(next);
 
   return (
-    <div className={css.app}>
-      <Toaster />
-      <div className={css.toolbar}>
+    <div className={css.app}>      <div className={css.toolbar}>
         <SearchBox value={search} onChange={setSearch} />
 
         <Link href="/notes/action/create" className={css.button}>
