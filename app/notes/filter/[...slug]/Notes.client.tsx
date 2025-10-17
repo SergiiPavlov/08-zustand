@@ -45,7 +45,8 @@ export default function NotesClient({ initialTag = 'All' }: { initialTag?: strin
   const handlePageChange = (next: number) => setPage(next);
 
   return (
-    <div className={css.app}>      <div className={css.toolbar}>
+    <div className={css.app}>
+      <div className={css.toolbar}>
         <SearchBox value={search} onChange={setSearch} />
 
         <Link prefetch={false} href="/notes/action/create" className={css.button}>
