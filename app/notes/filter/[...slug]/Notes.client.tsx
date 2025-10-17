@@ -35,6 +35,9 @@ export default function NotesClient({ initialTag = 'All' }: { initialTag?: strin
     queryFn: () =>
       fetchNotes({ search: debouncedSearch, tag: tagForQuery, page, perPage: PER_PAGE }),
     placeholderData: keepPreviousData,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 30_000,
   });
 
   const totalPages = data?.totalPages ?? 1;

@@ -7,9 +7,10 @@ const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
 const PAGE_PATH = '/notes';
 
 export const metadata = {
+  title: 'All notes',
   description: 'Browse all of your notes in one place.',
   alternates: {
-    canonical: `${APP_URL}${PAGE_PATH}`,
+    canonical: PAGE_PATH,
   },
   openGraph: {
     title: 'All notes',
@@ -25,6 +26,7 @@ export const metadata = {
     description: 'Browse all of your notes in one place.',
     images: [OG_IMAGE],
   },
+  metadataBase: new URL(APP_URL),
 } satisfies Metadata;
 
 export default function NotesPage() {
