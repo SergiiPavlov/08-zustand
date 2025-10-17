@@ -4,20 +4,41 @@ import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query
 import { fetchNotes } from '@/lib/api/notes';
 import type { NoteTag } from '@/types/note';
 
-const TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'] as const;
+const FILTERABLE_TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'] as const;
+const ALL_TAG = 'All';
 const APP_URL = 'https://notehub.example';
 const OG_IMAGE = 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg';
+
+function resolveTagFromSlug(slug?: string): { tag: string; tagForQuery?: NoteTag } {
+  if (!slug) {
+    return { tag: ALL_TAG, tagForQuery: undefined };
+  }
+
+  const matchingTag = FILTERABLE_TAGS.find((tag) => tag.toLowerCase() === slug.toLowerCase());
+  if (matchingTag) {
+    return { tag: matchingTag, tagForQuery: matchingTag };
+  }
+
+  if (slug.toLowerCase() === ALL_TAG.toLowerCase()) {
+    return { tag: ALL_TAG, tagForQuery: undefined };
+  }
+
+  return { tag: ALL_TAG, tagForQuery: undefined };
+}
 
 interface NotesFilterPageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
 export async function generateMetadata({ params }: NotesFilterPageProps): Promise<Metadata> {
-  const { slug = [] } = await params;
-  const tag = slug[0] ?? 'All';
-  const title = tag === 'All' ? 'All notes – NoteHub' : `Notes tagged: ${tag} – NoteHub`;
-  const description = tag === 'All' ? 'Browse all notes' : `Browse notes filtered by tag: ${tag}`;
-  const url = `${APP_URL}/notes/filter/${encodeURIComponent(tag)}`;
+  const { slug = [] } = (await params) ?? {};
+  const rawValue = slug[0];
+  const { tag } = resolveTagFromSlug(rawValue);
+  const isAll = tag === ALL_TAG;
+  const title = isAll ? 'All notes – NoteHub' : `Notes tagged: ${tag} – NoteHub`;
+  const description = isAll ? 'Browse all notes' : `Browse notes filtered by tag: ${tag}`;
+  const slugSegment = isAll ? ALL_TAG : tag;
+  const url = `${APP_URL}/notes/filter/${encodeURIComponent(slugSegment)}`;
 
   return {
     title,
@@ -40,11 +61,9 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
 }
 
 export default async function NotesFilterPage({ params }: NotesFilterPageProps) {
-  const { slug = [] } = await params;
-  const initialTag = slug[0] ?? 'All';
-
-  // 'All' не відправляємо на бекенд
-  const tagForQuery = TAGS.includes(initialTag as NoteTag) ? (initialTag as NoteTag) : undefined;
+  const { slug = [] } = (await params) ?? {};
+  const rawValue = slug[0];
+  const { tag: initialTag, tagForQuery } = resolveTagFromSlug(rawValue);
 
   const qc = new QueryClient();
   await qc.prefetchQuery({
