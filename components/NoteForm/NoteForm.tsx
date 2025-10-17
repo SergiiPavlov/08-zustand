@@ -3,7 +3,7 @@ import css from './NoteForm.module.css';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { createNote } from '@/lib/api';
+import { createNote } from '@/lib/api/notes';
 import { getErrorMessage } from '@/lib/errors';
 import type { NoteTag } from '@/types/note';
 import { useNoteDraftStore, initialDraft, type NoteDraft } from '@/lib/store/noteStore';
@@ -13,7 +13,9 @@ const TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shoppi
 export default function NoteForm() {
   const router = useRouter();
   const qc = useQueryClient();
-  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+  const draft = useNoteDraftStore((state) => state.draft);
+  const setDraft = useNoteDraftStore((state) => state.setDraft);
+  const clearDraft = useNoteDraftStore((state) => state.clearDraft);
 
   const { mutate, isPending } = useMutation({
     mutationFn: createNote,
@@ -31,7 +33,9 @@ export default function NoteForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target as HTMLInputElement & { name: keyof NoteDraft };
-    setDraft({ ...draft, [name]: value } as NoteDraft);
+    const fieldName = name as keyof NoteDraft;
+    const nextValue = fieldName === 'tag' ? (value as NoteTag) : value;
+    setDraft({ [fieldName]: nextValue } as Partial<NoteDraft>);
   };
 
   const handleSubmit = (formData: FormData) => {
@@ -58,7 +62,7 @@ export default function NoteForm() {
           name="title"
           type="text"
           className={css.input}
-          defaultValue={draft.title || initialDraft.title}
+          value={draft.title ?? initialDraft.title}
           onChange={handleChange}
           aria-required="true"
         />
@@ -70,7 +74,7 @@ export default function NoteForm() {
           id="content"
           name="content"
           className={css.textarea}
-          defaultValue={draft.content || initialDraft.content}
+          value={draft.content ?? initialDraft.content}
           onChange={handleChange}
         />
       </div>
@@ -81,7 +85,7 @@ export default function NoteForm() {
           id="tag"
           name="tag"
           className={css.select}
-          defaultValue={draft.tag || initialDraft.tag}
+          value={draft.tag ?? initialDraft.tag}
           onChange={handleChange}
         >
           {TAGS.map((tag) => (
