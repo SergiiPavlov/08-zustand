@@ -9,7 +9,7 @@ export default function SidebarNotes() {
       <ul className={css.menuList}>
         {TAGS.map((tag) => (
           <li key={tag} className={css.menuItem}>
-            <Link href={`/notes/filter/${encodeURIComponent(tag)}`} className={css.menuLink}>
+            <Link prefetch={false} href={`/notes/filter/${encodeURIComponent(tag)}`} className={css.menuLink}>
               {tag === 'All' ? 'All notes' : tag}
             </Link>
           </li>

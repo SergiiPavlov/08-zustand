@@ -17,6 +17,9 @@ export default function NotePreviewClient({ id }: NotePreviewClientProps) {
     queryKey: ['note', { id }],
     queryFn: () => fetchNoteById(id),
     refetchOnMount: false,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 30_000,
   });
 
   const handleClose = () => router.back();

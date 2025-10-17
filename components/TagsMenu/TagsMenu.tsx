@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import css from './TagsMenu.module.css';
@@ -13,7 +13,9 @@ export default function TagsMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const menuId = 'tags-menu';
+  const baseId = useId();
+  const menuId = `${baseId}-menu`;
+  const buttonId = `${baseId}-button`;
   const tags: (NoteTag | typeof ALL_TAG)[] = [ALL_TAG, ...NOTE_TAGS];
 
   // Автозакрытие при смене маршрута
@@ -49,21 +51,27 @@ export default function TagsMenu() {
   return (
     <div className={css.menuContainer} ref={containerRef}>
       <button
+        id={buttonId}
         type="button"
         className={css.menuButton}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        aria-controls={menuId}
+        aria-controls={isOpen ? menuId : undefined}
         onClick={() => setIsOpen(prev => !prev)}
       >
         Notes ▾
       </button>
 
       {isOpen && (
-        <ul id={menuId} className={css.menuList} role="menu">
+        <ul
+          id={menuId}
+          className={css.menuList}
+          role="menu"
+          aria-labelledby={buttonId}
+        >
           {tags.map(tag => (
             <li key={tag} className={css.menuItem} role="none">
-              <Link
+              <Link prefetch={false}
                 href={
                   tag === ALL_TAG
                     ? '/notes/filter/All'

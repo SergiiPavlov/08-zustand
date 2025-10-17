@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import { unstable_noStore } from 'next/cache';
 import NotesClient from './Notes.client';
 import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api/notes';
 import type { NoteTag } from '@/types/note';
+
+export const dynamic = 'force-dynamic';
 
 const FILTERABLE_TAGS: readonly NoteTag[] = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'] as const;
 const ALL_TAG = 'All';
@@ -31,6 +34,7 @@ interface NotesFilterPageProps {
 }
 
 export async function generateMetadata({ params }: NotesFilterPageProps): Promise<Metadata> {
+  unstable_noStore();
   const { slug = [] } = (await params) ?? {};
   const rawValue = slug[0];
   const { tag } = resolveTagFromSlug(rawValue);
@@ -38,11 +42,15 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
   const pageTitle = isAll ? 'All notes' : `Notes tagged: ${tag}`;
   const description = isAll ? 'Browse all notes' : `Browse notes filtered by tag: ${tag}`;
   const slugSegment = isAll ? ALL_TAG : tag;
-  const url = `${APP_URL}/notes/filter/${encodeURIComponent(slugSegment)}`;
+  const canonicalPath = `/notes/filter/${encodeURIComponent(slugSegment)}`;
+  const url = `${APP_URL}${canonicalPath}`;
 
   return {
     title: pageTitle,
     description,
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
       title: pageTitle,
       description,
@@ -57,10 +65,12 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
       description,
       images: [OG_IMAGE],
     },
+    metadataBase: new URL(APP_URL),
   };
 }
 
 export default async function NotesFilterPage({ params }: NotesFilterPageProps) {
+  unstable_noStore();
   const { slug = [] } = (await params) ?? {};
   const rawValue = slug[0];
   const { tag: initialTag, tagForQuery } = resolveTagFromSlug(rawValue);

@@ -35,6 +35,9 @@ export default function NotesClient({ initialTag = 'All' }: { initialTag?: strin
     queryFn: () =>
       fetchNotes({ search: debouncedSearch, tag: tagForQuery, page, perPage: PER_PAGE }),
     placeholderData: keepPreviousData,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 30_000,
   });
 
   const totalPages = data?.totalPages ?? 1;
@@ -45,7 +48,7 @@ export default function NotesClient({ initialTag = 'All' }: { initialTag?: strin
     <div className={css.app}>      <div className={css.toolbar}>
         <SearchBox value={search} onChange={setSearch} />
 
-        <Link href="/notes/action/create" className={css.button}>
+        <Link prefetch={false} href="/notes/action/create" className={css.button}>
           Create note +
         </Link>
       </div>

@@ -14,6 +14,9 @@ export default function NoteDetailsClient() {
     queryKey: ['note', { id: keyId }],
     queryFn: () => fetchNoteById(rawId),
     refetchOnMount: false, // в API передаём строковый id
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 30_000,
   });
 
   // Состояния по ТЗ
