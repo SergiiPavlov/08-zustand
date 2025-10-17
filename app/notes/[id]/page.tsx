@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
   const { id } = await params;
   try {
     const note = await fetchNoteById(id);
-    const title = `Note: ${note.title} – NoteHub`;
+    const title = `Note: ${note.title}`;
     const description = note.content.slice(0, 100);
     const url = `${APP_URL}/notes/${encodeURIComponent(id)}`;
     return {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
     };
   } catch {
     return {
-      title: 'Note – NoteHub',
+      title: 'Note',
       description: 'Note details',
     };
   }

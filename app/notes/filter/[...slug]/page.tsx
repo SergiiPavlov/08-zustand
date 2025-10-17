@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
   const rawValue = slug[0];
   const { tag } = resolveTagFromSlug(rawValue);
   const isAll = tag === ALL_TAG;
-  const title = isAll ? 'All notes – NoteHub' : `Notes tagged: ${tag} – NoteHub`;
+  const title = isAll ? 'All notes' : `Notes tagged: ${tag}`;
   const description = isAll ? 'Browse all notes' : `Browse notes filtered by tag: ${tag}`;
   const slugSegment = isAll ? ALL_TAG : tag;
   const url = `${APP_URL}/notes/filter/${encodeURIComponent(slugSegment)}`;
