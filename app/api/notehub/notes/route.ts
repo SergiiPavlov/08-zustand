@@ -1,10 +1,11 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   buildNotehubUrl,
   createNotehubHeaders,
   handleNotehubProxyError,
   relayNotehubResponse,
 } from '../utils';
+import { getMockNotes } from '../mock-data';
 
 export async function GET(req: NextRequest) {
   const url = buildNotehubUrl('/notes', req.nextUrl.searchParams);
@@ -14,9 +15,27 @@ export async function GET(req: NextRequest) {
       headers: createNotehubHeaders(),
       cache: 'no-store',
     });
+
+    if (!response.ok) {
+      throw new Error(`Unexpected status ${response.status}`);
+    }
+
     return await relayNotehubResponse(response);
   } catch (error) {
-    return handleNotehubProxyError(error);
+    console.warn('[notehub] Falling back to mock notes data.', error);
+
+    const searchParams = req.nextUrl.searchParams;
+    const fallback = getMockNotes({
+      page: Number(searchParams.get('page') ?? undefined),
+      perPage: Number(searchParams.get('perPage') ?? undefined),
+      search: searchParams.get('search'),
+      tag: searchParams.get('tag'),
+    });
+
+    return NextResponse.json(fallback, {
+      status: 200,
+      headers: { 'x-notehub-mock': '1' },
+    });
   }
 }
 
